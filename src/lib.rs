@@ -1,10 +1,10 @@
 mod args;
 mod heatmap;
 
-pub use args::Args;
+pub use args::{Args, ColorValues};
 use std::error;
 use scraper::Html;
-use heatmap::ContributionHeatmap;
+use heatmap::Heatmap;
 
 const PROFILE_URL: &str = "https://github.com";
 
@@ -13,8 +13,8 @@ pub fn run(args: &Args) -> Result<(), Box<dyn error::Error>> {
     let body = reqwest::blocking::get(profile_url)?.text()?;
     let document = Html::parse_document(&body);
 
-    let heatmap = ContributionHeatmap::from_document(&document);
-    heatmap.render();
+    let heatmap = Heatmap::from_document(&document);
+    heatmap.generate(&args.color);
 
     Ok(())
 }
