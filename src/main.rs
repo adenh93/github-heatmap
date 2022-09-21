@@ -4,9 +4,8 @@ use github_heatmap::{run, Args};
 
 fn main() {
     let args = Args::parse();  
-    println!("{args:?}");
 
-    if let Err(e) = run() {
+    if let Err(e) = run(&args) {
         eprintln!("An error occurred: {e:?}");
         process::exit(1);
     }
