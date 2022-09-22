@@ -1,3 +1,4 @@
+use crate::parsers::{parse_slug, parse_year};
 use clap::{Parser, ValueEnum};
 
 /// Scrapes a Github profile, and generates a contributions heatmap in Unicode
@@ -5,7 +6,7 @@ use clap::{Parser, ValueEnum};
 #[clap(author, version, about)]
 pub struct Args {
     /// Github profile slug, e.g. adenh93
-    #[clap(value_parser)]
+    #[clap(value_parser = parse_slug)]
     pub slug: String,
 
     /// Heatmap color scheme. Nodes will be shaded depending on heat level.
@@ -13,7 +14,7 @@ pub struct Args {
     pub color: ColorValues,
 
     /// Specific year to fetch contributions
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_parser = parse_year)]
     pub year: Option<String>
 }
 

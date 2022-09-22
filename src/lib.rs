@@ -1,5 +1,6 @@
 mod args;
 mod heatmap;
+mod parsers;
 
 pub use args::{Args, ColorValues};
 use std::error;
