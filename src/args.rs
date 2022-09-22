@@ -11,6 +11,10 @@ pub struct Args {
     /// Heatmap color scheme. Nodes will be shaded depending on heat level.
     #[clap(short, long, value_enum, default_value_t = ColorValues::Green)]
     pub color: ColorValues,
+
+    /// Specific year to fetch contributions
+    #[clap(short, long, value_parser)]
+    pub year: Option<String>
 }
 
 #[derive(ValueEnum, Debug, Clone)]
