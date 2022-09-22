@@ -21,11 +21,17 @@ This is intended to be a fun little project to play around with scraping with Ru
 #### Default arguments
 `github-heatmap torvalds`
 
+![default example](examples/default.jpg)
+
 #### Alternative Color
 `github-heatmap torvalds -c blue`
 
+![alternative colors example](examples/colors.jpg)
+
 #### Filter by year
-`github-heatmap torvalds -y 202
+`github-heatmap torvalds -y 2022`
+
+![filter by years example](examples/years.jpg)
 
 ## TODO
 
