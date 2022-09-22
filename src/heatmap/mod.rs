@@ -31,9 +31,9 @@ impl Heatmap {
         for day in 0..DAYS_IN_WEEK {
             let week: String = self.contribution_weeks
                 .iter()
-                .map(|week| match week.contributions.get(day) {
+                .map(|week| match &week.contributions[day] {
                     Some(day) => day.render(color),
-                    None => String::from("")
+                    None => String::from("  ")
                 })
                 .collect();
 

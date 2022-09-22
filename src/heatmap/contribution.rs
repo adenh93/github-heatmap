@@ -4,7 +4,7 @@ use crate::ColorValues;
 
 const LEVEL_ATTR: &str = "data-level";
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Contribution {
     pub heat_level: usize
 }
