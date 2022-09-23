@@ -1,10 +1,10 @@
 use thiserror::Error;
 use reqwest::StatusCode;
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum GithubError {
     #[error("Unable to reach Github services. Try again later!")]
-    BadRequest(#[from] reqwest::Error),
+    BadRequest,
     
     #[error("Unable to scrape Github profile: '{0}'")]
     ScrapeFailure(StatusCode),
@@ -13,7 +13,7 @@ pub enum GithubError {
     ProfileNotFound(String),
 }
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum HeatmapError {
     #[error("Failed to query element '{alias}' with selector: '{selector}'")]
     QueryElement { alias: String, selector: String },

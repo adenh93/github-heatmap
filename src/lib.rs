@@ -29,7 +29,7 @@ fn get_github_profile(profile_url: &str) -> Result<Html, GithubError> {
     let response = reqwest::blocking::get(profile_url).unwrap();
 
     let body = match response.status() {
-        StatusCode::OK => Ok(response.text().map_err(GithubError::BadRequest)?),
+        StatusCode::OK => Ok(response.text().map_err(|_| GithubError::BadRequest)?),
         StatusCode::NOT_FOUND => Err(GithubError::ProfileNotFound(profile_url.to_string())),
         status => Err(GithubError::ScrapeFailure(status))
     }?;
