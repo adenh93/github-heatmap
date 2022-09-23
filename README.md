@@ -38,8 +38,8 @@ This is intended to be a fun little project to play around with scraping with Ru
 
 ## TODO
 
-- [ ] Error handling
+- [x] Error handling
 - [x] Argument validation/value parsers
-- [ ] Testing
+- [x] Testing
 - [ ] Documentation
 - [ ] Publish to crates.io
