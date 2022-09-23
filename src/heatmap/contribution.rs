@@ -11,19 +11,7 @@ pub struct Contribution {
 
 impl Contribution {
     pub fn from_el(el: &ElementRef) -> Result<Self, HeatmapError> {
-       let heat_level = el
-           .value()
-           .attr(LEVEL_ATTR)
-           .ok_or_else(|| HeatmapError::QueryAttribute { 
-               attr: LEVEL_ATTR.to_string(), 
-               on_alias: "heatmap node".to_string()
-           })?
-           .parse()
-           .map_err(|_| HeatmapError::ParseAttribute { 
-               attr: LEVEL_ATTR.to_string(),
-               on_alias: "heatmap node".to_string()
-           })?;
-
+       let heat_level = Self::parse_heat_level(el)?;
        Ok(Contribution { heat_level })
     }
 
@@ -44,6 +32,23 @@ impl Contribution {
 
        "\u{025A0} ".color(fill).to_string()
     }
+
+    fn parse_heat_level(el: &ElementRef) -> Result<usize, HeatmapError> {
+        let heat_level = el
+           .value()
+           .attr(LEVEL_ATTR)
+           .ok_or_else(|| HeatmapError::QueryAttribute { 
+               attr: LEVEL_ATTR.to_string(), 
+               on_alias: "heatmap node".to_string()
+           })?
+           .parse()
+           .map_err(|_| HeatmapError::ParseAttribute { 
+               attr: LEVEL_ATTR.to_string(),
+               on_alias: "heatmap node".to_string()
+           })?;
+
+        Ok(heat_level)
+    }
 }
 
 #[cfg(test)] 
@@ -62,14 +67,24 @@ mod tests {
     }
 
     #[test]
+    fn parses_level_attribute() {
+        let fragment = Html::parse_fragment("<rect y='15' data-level='3' />");
+        let selector = Selector::parse("rect").unwrap();
+        let rect_el = fragment.select(&selector).next().unwrap();
+        let heat_level = Contribution::parse_heat_level(&rect_el).unwrap();
+
+        assert_eq!(heat_level, 3)
+    }
+
+    #[test]
     fn error_if_no_level_attribute() {
         let fragment = Html::parse_fragment("<rect y='15' data-heat-level='3' />");
         let selector = Selector::parse("rect").unwrap();
         let rect_el = fragment.select(&selector).next().unwrap();
-        let contribution = Contribution::from_el(&rect_el);
+        let heat_level = Contribution::parse_heat_level(&rect_el);
 
         assert_eq!(
-            contribution, 
+            heat_level, 
             Err(HeatmapError::QueryAttribute { attr: LEVEL_ATTR.to_string(), on_alias: "heatmap node".to_string() })
         )
     } 
@@ -79,10 +94,10 @@ mod tests {
         let fragment = Html::parse_fragment("<rect y='15' data-level='three' />");
         let selector = Selector::parse("rect").unwrap();
         let rect_el = fragment.select(&selector).next().unwrap();
-        let contribution = Contribution::from_el(&rect_el);
+        let heat_level = Contribution::parse_heat_level(&rect_el);
 
         assert_eq!(
-            contribution, 
+            heat_level, 
             Err(HeatmapError::ParseAttribute { attr: LEVEL_ATTR.to_string(), on_alias: "heatmap node".to_string() })
         )
     }
