@@ -1,6 +1,6 @@
 use colored::{Color, Colorize};
 use scraper::ElementRef;
-use crate::ColorValues;
+use crate::{ColorValues, HeatmapError};
 
 const LEVEL_ATTR: &str = "data-level";
 
@@ -10,9 +10,21 @@ pub struct Contribution {
 }
 
 impl Contribution {
-    pub fn from_el(el: &ElementRef) -> Self {
-       let heat_level = el.value().attr(LEVEL_ATTR).unwrap().parse().unwrap();
-       Contribution { heat_level }
+    pub fn from_el(el: &ElementRef) -> Result<Self, HeatmapError> {
+       let heat_level = el
+           .value()
+           .attr(LEVEL_ATTR)
+           .ok_or_else(|| HeatmapError::QueryAttribute { 
+               attr: LEVEL_ATTR.to_string(), 
+               on_alias: "heatmap node".to_string()
+           })?
+           .parse()
+           .map_err(|_| HeatmapError::ParseAttribute { 
+               attr: LEVEL_ATTR.to_string(),
+               on_alias: "heatmap node".to_string()
+           })?;
+
+       Ok(Contribution { heat_level })
     }
 
     pub fn render(&self, color: &ColorValues) -> String {

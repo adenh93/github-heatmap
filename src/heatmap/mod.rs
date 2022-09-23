@@ -5,7 +5,7 @@ use contribution_week::ContributionWeek;
 use contribution::Contribution;
 
 use scraper::{Selector, Html};
-use crate::ColorValues;
+use crate::{ColorValues, HeatmapError};
 
 const WEEK_SELECTOR: &str = "svg.js-calendar-graph-svg g g";
 const DAY_SELECTOR: &str = "rect.ContributionCalendar-day";
@@ -17,14 +17,32 @@ pub struct Heatmap {
 }
 
 impl Heatmap {
-    pub fn from_document(document: &Html) -> Self {
+    pub fn from_document(document: &Html) -> Result<Self, HeatmapError> {
         let contribution_week_selector = Selector::parse(WEEK_SELECTOR).unwrap();
         let day_selector = Selector::parse(DAY_SELECTOR).unwrap();
+        let mut contribution_weeks = vec![];
 
-        let contribution_weeks = document.select(&contribution_week_selector)
-            .map(|el| ContributionWeek::from_el(&el, &day_selector)).collect();
+        for el in document.select(&contribution_week_selector) {
+            let day_els: Vec<_> = el.select(&day_selector).collect();
+        
+            if day_els.is_empty() {
+                return Err(HeatmapError::QueryElement {
+                    alias: "heatmap node".to_string(),
+                    selector: DAY_SELECTOR.to_string()
+                });
+            }
 
-        Heatmap { contribution_weeks }
+            let week = ContributionWeek::from_days(&day_els)?;
+            contribution_weeks.push(week);
+        }
+
+        match &contribution_weeks.is_empty() {
+            false => Ok(Heatmap { contribution_weeks }),
+            true => Err(HeatmapError::QueryElement {
+                alias: "heatmap".to_string(),
+                selector: WEEK_SELECTOR.to_string()
+            })
+        }
     }
 
     pub fn generate(&self, color: &ColorValues) {
