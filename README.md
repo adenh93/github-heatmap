@@ -41,5 +41,5 @@ This is intended to be a fun little project to play around with scraping with Ru
 - [x] Error handling
 - [x] Argument validation/value parsers
 - [x] Testing
-- [ ] Documentation
-- [ ] Publish to crates.io
+- [x] Documentation
+- [x] Publish to crates.io
