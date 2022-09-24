@@ -1,5 +1,9 @@
 # github-heatmap
 
+![Crate Version](https://img.shields.io/crates/v/github-heatmap)
+![Deploy](https://github.com/adenh93/github-heatmap/actions/workflows/deploy.yml/badge.svg)
+![Develop](https://github.com/adenh93/github-heatmap/actions/workflows/build-and-test.yml/badge.svg)
+
 A CLI tool built with Rust to scrape a Github profile and mirror the SVG heatmap as Unicode.
 
 This is intended to be a fun little project to play around with scraping with Rust. I know that it's not the most efficient way to get these results, especially given that Github's GraphQL API is quite extensive.
