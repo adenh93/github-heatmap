@@ -18,6 +18,6 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
       - name: Login to crates.io
-        run: cargo login ${secrets.CRATES_IO_KEY}
+        run: cargo login ${{ secrets.CRATES_IO_KEY }}
       - name: Deploy to crates.io
         run: cargo publish

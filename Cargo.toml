@@ -7,7 +7,7 @@ readme = "README.md"
 keywords = ["github", "heatmap", "contributions", "scraping"]
 categories = ["command-line-utilities"]
 license-file = "LICENSE"
-version = "0.2.0"
+version = "1.0.0"
 edition = "2021"
 exclude = [
     "examples/*",
