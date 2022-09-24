@@ -1,14 +1,13 @@
-mod args;
 mod heatmap;
-mod parsers;
-mod errors;
+mod utils;
 
-pub use args::{Args, ColorValues};
 use std::error;
 use reqwest::StatusCode;
 use scraper::Html;
-use heatmap::Heatmap;
-use errors::{HeatmapError, GithubError};
+pub use heatmap::{Heatmap, ContributionWeek, Contribution};
+pub use utils::args::{Args, ColorValues};
+pub use utils::errors::{HeatmapError, GithubError};
+pub use utils::parsers::{parse_slug, parse_year};
 
 const PROFILE_URL: &str = "https://github.com";
 
@@ -20,7 +19,7 @@ pub fn run(args: &Args) -> Result<(), Box<dyn error::Error>> {
 
     let profile = get_github_profile(&profile_url)?;
     let heatmap = Heatmap::from_document(&profile)?;
-    heatmap.generate(&args.color);
+    heatmap.render(&args.color);
 
     Ok(())
 }

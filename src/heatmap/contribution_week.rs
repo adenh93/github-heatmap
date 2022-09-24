@@ -4,12 +4,38 @@ use super::Contribution;
 
 const Y_ATTR: &str = "y";
 
-#[derive(Debug, PartialEq)]
+/// A `ContributionWeek` instance represents an entire week of contributions
+/// in a Github contribution heatmap. Typically visible as a column of heatmap
+/// nodes on a Github profile page.
+///
+/// `ContributionWeek` instances are typically not constructed explicitly, rather created
+/// implicitly by the higher level `Heatmap` struct via the `from_days` associated method.
+///
+#[derive(Debug, Eq, PartialEq)]
 pub struct ContributionWeek {
+    /// A vector of [`Contribution`] instances belonging to the week. 
+    ///
+    /// Contributions are wrapped in an Option, as years won't necessarily begin
+    /// and/or end on a Sunday, meaning that certain days may not be included in the
+    /// heatmap during any given week.
     pub contributions: Vec<Option<Contribution>>
 }
 
 impl ContributionWeek {
+    /// Contructs a new `ContributionWeek` instance from a vector of HTML elements.
+    /// Provided vector corresponds to a collection of Github heatmap nodes.
+    ///
+    /// For each valid day of the week with contributions, a [`Contribution`] instance
+    /// will be constructed and pushed to the `contributions` vector.
+    ///
+    /// # Errors
+    /// - [`HeatmapError::QueryAttribute`] fails to query y attribute
+    /// - [`HeatmapError::ParseAttribute`] fails to parse y attribute
+    /// - [`HeatmapError::UnknownNodeFormat`] encounters unexpected heatmap node size while
+    /// determining day of week for contributions
+    ///
+    /// See [`Contribution`] for possible errors related to constructing a ['Contribution'].
+    ///
     pub fn from_days(days: &Vec<ElementRef>) -> Result<Self, HeatmapError> {
         let mut contributions: Vec<Option<Contribution>> = vec![None; 7]; 
 

@@ -1,9 +1,8 @@
 mod contribution_week;
 mod contribution;
 
-use contribution_week::ContributionWeek;
-use contribution::Contribution;
-
+pub use contribution_week::ContributionWeek;
+pub use contribution::Contribution;
 use scraper::{Selector, Html, ElementRef};
 use crate::{ColorValues, HeatmapError};
 
@@ -11,12 +10,39 @@ const WEEK_SELECTOR: &str = "svg.js-calendar-graph-svg g g";
 const DAY_SELECTOR: &str = "rect.ContributionCalendar-day";
 const DAYS_IN_WEEK: usize = 7;
 
-#[derive(Debug, PartialEq)]
+/// A `Heatmap` instance represents a fully scraped and parsed Github
+/// constribution heatmap.
+///
+/// A `Heatmap` is constructed from a reference to a parsed HTML document
+/// corresponding to a Github profile.
+///
+#[derive(Debug, Eq, PartialEq)]
 pub struct Heatmap {
+    /// A vector of [`ContributionWeek`] instances spanning across the entire
+    /// year of contributions.
     pub contribution_weeks: Vec<ContributionWeek>,
 }
 
 impl Heatmap {
+    /// Constructs a new `Heatmap` instance from a parsed HTML document.
+    /// Provided reference to HTML document corresponds to the markup of a
+    /// Github profile page (e.g. <https://github.com/torvalds>).
+    ///
+    /// [`ContributionWeek`] instances will be constructed and pushed to the 
+    /// `contribution_weeks` vector for as many columns are evident in the parsed
+    /// markup.
+    ///
+    /// # Errors
+    /// - [`HeatmapError::QueryElement`] fails to query Heatmap SVG element.
+    /// - [`HeatmapError::QueryElement`] fails to query Heatmap node elements
+    /// 
+    /// See [`ContributionWeek`] for errors related to constructing [`ContributionWeek`]
+    /// instances.
+    ///
+    /// # Panics
+    /// A panic will occur in the unlikely event that `Selector::parse` fails to parse 
+    /// CSS selector constants.
+    ///
     pub fn from_document(document: &Html) -> Result<Self, HeatmapError> {
         let contribution_week_selector = Selector::parse(WEEK_SELECTOR).unwrap();
         let day_selector = Selector::parse(DAY_SELECTOR).unwrap();
@@ -36,7 +62,13 @@ impl Heatmap {
         }
     }
 
-    pub fn generate(&self, color: &ColorValues) {
+    /// Generates visual representation of Heatmap data structure,
+    /// and writes it to standard output.
+    ///
+    /// Resulting Unicode will have a fill color depending on provided
+    /// [`ColorValues`] color variant.
+    ///
+    pub fn render(&self, color: &ColorValues) {
         for day in 0..DAYS_IN_WEEK {
             let week: String = self.contribution_weeks
                 .iter()
