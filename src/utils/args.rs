@@ -1,4 +1,4 @@
-use crate::parsers::{parse_slug, parse_year};
+use super::parsers::{parse_slug, parse_year};
 use clap::{Parser, ValueEnum};
 
 /// Scrapes a Github profile, and generates a contributions heatmap in Unicode

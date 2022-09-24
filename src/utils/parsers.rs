@@ -7,6 +7,14 @@ fn validate_regex(value: &str, reg_exp: &Regex) -> Result<String, String> {
     }
 }
 
+/// Attempts to parse a Github profile slug, based on a regular expression
+/// typically used while restricting profile names. Assures that only
+/// valid profile slugs are being provided as an argument to Clap.
+///
+/// # Errors
+/// Returns an error if provided slug argument does not match regular
+/// expression.
+///
 pub fn parse_slug(value: &str) -> Result<String, String> {
     let github_slug_regex = Regex::new(r"^[a-zA-Z0-9-]{0,38}$").unwrap();
 
@@ -17,6 +25,14 @@ pub fn parse_slug(value: &str) -> Result<String, String> {
     Ok(result)
 }
 
+/// Attempts to parse a provided Year argument, based on simple regular
+/// expression. Assures that only valid calendar years are being provided
+/// as an argument to clap.
+///
+/// # Errors
+/// Returns an error if provided year argument does not match regular
+/// expression.
+///
 pub fn parse_year(value: &str) -> Result<String, String> {
     let year_regex = Regex::new(r"^[\d]{4}$").unwrap();
 
